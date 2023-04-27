@@ -1,12 +1,22 @@
-birthdays = {
-    'Alice':'Apr 1',
-    'Bob':'Dec 12',
-    'Carol':'Mar 4'
-}
+import json
+
+file = "data.json"
+
+jsonFile = open(file,"r")
+jsonContent = jsonFile.read()
+birthdays = json.loads(jsonContent)
+    
+#save birthdays to json file
+def saveBirthday(birthdays):
+    jsonString = json.dumps(birthdays)
+    jsonFile = open(file, "w")
+    jsonFile.write(jsonString)
+    jsonFile.close
 
 while True:
     print('Enter a name: (blank to quit)')
     name = input()
+    
     if name == '':
         break
 
@@ -15,12 +25,11 @@ while True:
     else:
         print('I do not have birthday information for ' + name)
         print('When is their birthday?')
+        
         bday = input()
         birthdays[name] = bday
+
+        saveBirthday(birthdays)
+
         print('Birthday database updated.')
 
-def print_birthdays(birthdays):
-    print(birthdays)
-
-
-print_birthdays(birthdays)
