@@ -8,7 +8,7 @@ DESCRIPTION: A simple project that checks the user input against what's in the f
 
         TO DO:
             - add error handling
-                - problem: if file doesn't exist, then it throws an error
+                - fixed 042823: if file doesn't exist, then it throws an error
             - change bday to date format
             - validate user input
                 - name should only include letters
