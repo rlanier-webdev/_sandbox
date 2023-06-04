@@ -1,2 +1,10 @@
+#directories
 venv/
-data.json
+virtualspace/
+
+# files
+*.pdf
+*.csv
+
+header_template.py
+/housing/_housing.code-workspace
