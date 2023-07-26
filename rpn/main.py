@@ -30,40 +30,34 @@
                push back onto stack
                ///
                If the operand is a digit, the function pushes the value of the digit onto the stack. 
-               If the token is an operator, the function pops the top two items off the stack, evaluates the expression, and pushes the result back onto the stack.
-
-          Errors
-          Traceback (most recent call last):
-          File "c:\Users\rlani\_dev\_sandbox\rpn\main.py", line 59, in <module>
-          evaluate_expression(expression)
-          File "c:\Users\rlani\_dev\_sandbox\rpn\main.py", line 52, in evaluate_expression
-          op1 = stack.pop()
-                    ^^^^^^^^^^^
-          IndexError: pop from empty list
+               If an operator, the function pops the top two items off the stack, evaluates the expression, and pushes the result back onto the stack.
 '''
 
 def evaluate_expression(expression):
-     array = expression.split()
-     #print(array)
-     
+     arr = expression.split()
+
      stack = [] # this is your stack
-     #operators = ['+','-','*','/']
-     # loop through the list and push operands to stack
      
-     # If the token is an operator, the function pops the top two items off the stack, evaluates the expression, and pushes the result back onto the stack.
-     for item in array:
+     # loop through the list and push operands to stack
+     for item in arr:
           # If the operand is a digit, push the operand onto the stack. 
           if item.isnumeric():
-               stack.append(item)
-               print(item)
+               stack.append(int(item))
           else:
+               #If an operator, the function pops the top two items off the stack, evaluates the expression, and pushes the result back onto the stack.
                op2 = stack.pop()
                op1 = stack.pop()
-               #result = op1, item, op2
-               
-               print(op1)    
-     #print(operands)
+
+               if item == '+':
+                    stack.append(op1 + op2)
+               elif item == '-':
+                    stack.append(op1 - op2)
+               elif item == '*':
+                    stack.append(op1 * op2)
+               elif item == '/':
+                    stack.append(op1 / op2)
+
+     return stack.pop()
 
 expression = '8 2 3 - +'
-evaluate_expression(expression)
-
+print(evaluate_expression(expression))
