@@ -45,19 +45,14 @@ def get_file():
 
 def download_file():
      """   
-     download and extract tables within PDF files
+     download and extract tables within PDF files using tabula
+          - supported output_formats are "csv", "json" or "tsv"
 
-     tabula.read_pdf() - returns a list of pandas DataFrames (each DataFrame corresponds to a table), passing url directly automatically downloads pdf file
-     
-     pages="all" - extract tables in all the PDF pages 
+     tabula.convert_into() -  convert tables within a PDF document into other formats such as CSV, Excel, or HTML
+          - pages="all" - extract tables in all the PDF pages 
      """
-     #tables = tabula.read_pdf(url, pages="all")
-     #print(tables)
-     
-     """
+
      # convert all tables of a PDF file into a single CSV file
-     # supported output_formats are "csv", "json" or "tsv"
-     """
      tabula.convert_into(url, "output.csv", output_format="csv", pages="all")
 
 def clean_file():
@@ -65,49 +60,44 @@ def clean_file():
      file output.csv
           1. strip information from top of file lines 1-16
           2. clean up table header, line 17
-               a. if delimeter is not a comma, then covert to comma
           3. clean up data
                - formatting issues
                     incorrect format:
                     63103 City Parc at Pine	1531 Pine St St. Lois MO (314) 309-2264 Tax Credit 55+	Stdio 2 BR
+                         - lines 18-21
+                         - lines 23-35
+
                     
                     correct format:
                     63104,Clinton Peabody,1401 LaSalle,St. Louis,MO,(314) 231-7595,Subsidized,18+,"1,2,3,4,5 BR"
+
+
      ''' 
      output_file = 'output.csv'
+     new_file = 'new_file.csv'
+     
      # initializing temp list and list for column names
      temp = []
      column_names = []
-     
+
+     # read downloaded file
      with open(output_file, 'r') as csv_file:
-          # Skip the heading
-          for _ in range(0,16):
-               next(csv_file)
-          
           reader = csv.reader(csv_file, delimiter=',')
+
+          # Skip the heading
+          for _ in range(16):
+               next(reader)
+
+          # first row once heading is removed
+          temp = next(reader)
           
-          for row in reader:
-               temp.append(row)
-               for field in temp:
-                    item = field[1].split() # get the second
+          # create a new list with first and last, split the second element
+          column_names = [temp[0]] + temp[1].split() + [temp[-1]] 
+          print(column_names)
 
-                    for x in item:
-                         column_names.insert(-1,x)
-                    
-                    column_names.append(field[-1]) 
-                    column_names.insert(0,field[0])
-               break # break after the first iteration because you only want the header row
-               #rows.append(row)
-          #print(column_names)
-          print('Column Names:', column_names)
-     #print("List of column names : ", column_names[0])
-
-     #print(rows[0:14])
-     #delete_headers(output_file)
-
-# skiprows with pandas
-def delete_headers(output_file):
-     df = pd.read_csv(output_file)
-     print(df)
+     # write to new file
+     with open(new_file,'w') as f:
+          write = csv.writer(f)
+          write.writerow(column_names)
 
 clean_file()
