@@ -21,7 +21,7 @@ def expand_first_row(original_data, num_rows_to_insert):
           year = 1889 + i - 1
           new_row = [str(i), str(year), 'W', 'L','']  # Adjusted column indices
           new_rows.append(new_row)
-
+     
      # Insert the new rows at the beginning of the data
      original_data[0:0] = new_rows
 
@@ -52,6 +52,7 @@ def scrape_and_process_table_data(url, table_index_to_scrape):
                          # Check if there are at least 5 columns in the row (header has 5 columns)
                          if len(row_data) == 5:
                               header = row_data  # Add the header as-is
+                              header_set = True  # Set the header flag
 
                          if len(row_data) >= 6:
                               row_data[6] = clean_data(row_data[6])
@@ -60,13 +61,17 @@ def scrape_and_process_table_data(url, table_index_to_scrape):
                               if len(row_data) >= 7:
                                    data.append([row_data[i] for i in [0, 1, 3, 5, 6]])  # Select the desired columns
                          else:
-                              print(f"Skipping row with insufficient columns: {len(row_data)} {row_data}")
+                              if not header_set:
+                                   print(f"Skipping row with insufficient columns: {len(row_data)} {row_data}")
 
                     # Replace the existing data with the expanded data
                     expand_first_row(data, 12)
-
+                    
                     # Create a Pandas DataFrame from the extracted data with the header
                     df = pd.DataFrame(data, columns=header)
+
+                    # Drop the row with index 12
+                    df.drop(df.index[12], inplace=True)
 
                     # Export the DataFrame to a CSV file
                     df.to_csv("wiki_table_data.csv", index=False)
