@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
+
 def clean_data(text):
      # Remove text within square brackets
      text = re.sub(r'\[.*\]', '', text)
@@ -18,7 +19,7 @@ def expand_first_row(original_data, num_rows_to_insert):
      new_rows = []
      for i in range(1, num_rows_to_insert + 1):
           year = 1889 + i - 1
-          new_row = [str(i), str(year), 'W', 'L']  # Adjusted column indices
+          new_row = [str(i), str(year), 'W', 'L','']  # Adjusted column indices
           new_rows.append(new_row)
 
      # Insert the new rows at the beginning of the data
@@ -41,28 +42,31 @@ def scrape_and_process_table_data(url, table_index_to_scrape):
 
                if table_to_scrape:
                     data = []  # Create a list to store table data
-                    header_processed = False
 
                     # Extract table data (<td> elements)
                     for row in table_to_scrape.find_all("tr"):
+                         
                          cells = row.find_all(["td", "th"])
                          row_data = [cell.get_text().strip() for cell in cells]
-
+                         
                          # Check if there are at least 5 columns in the row (header has 5 columns)
-                         if len(row_data) >= 5:
-                              if not header_processed:
-                                   data.append(row_data)  # Add the header as-is
-                                   header_processed = True
-                              else:
+                         if len(row_data) == 5:
+                              header = row_data  # Add the header as-is
+
+                         if len(row_data) >= 6:
+                              row_data[6] = clean_data(row_data[6])
+
+                              # Check if there are at least 7 columns (0 to 6) before extracting data
+                              if len(row_data) >= 7:
                                    data.append([row_data[i] for i in [0, 1, 3, 5, 6]])  # Select the desired columns
                          else:
-                              print(f"Skipping row with insufficient columns: {row_data}")
+                              print(f"Skipping row with insufficient columns: {len(row_data)} {row_data}")
 
                     # Replace the existing data with the expanded data
                     expand_first_row(data, 12)
 
-                    # Create a Pandas DataFrame from the extracted data
-                    df = pd.DataFrame(data)
+                    # Create a Pandas DataFrame from the extracted data with the header
+                    df = pd.DataFrame(data, columns=header)
 
                     # Export the DataFrame to a CSV file
                     df.to_csv("wiki_table_data.csv", index=False)
@@ -76,7 +80,6 @@ def scrape_and_process_table_data(url, table_index_to_scrape):
           print("Failed to retrieve the web page. Status code:", response.status_code)
 
 
-# Example usage:
-url = "https://en.wikipedia.org/wiki/Baltimore_City_College_football"  # Replace with your target URL
-table_index = 5  # Replace with the index of the table you want to scrape
+url = "https://en.wikipedia.org/wiki/Baltimore_City_College_football"  # target URL
+table_index = 5  # index of the table you want to scrape
 scrape_and_process_table_data(url, table_index)
