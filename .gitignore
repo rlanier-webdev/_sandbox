@@ -3,6 +3,7 @@ venv/
 v_env/
 prod_venv/
 virtualspace/
+disk_mgmt/
 youtube_projects/
 
 # files
@@ -13,5 +14,3 @@ youtube_projects/
 header_template.py
 
 #data.json
-
-
