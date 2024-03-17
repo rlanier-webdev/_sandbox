@@ -3,13 +3,15 @@ venv/
 v_env/
 prod_venv/
 virtualspace/
+youtube_projects/
 
 # files
 *.pdf
 *.csv
+*.code-workspace
 
 header_template.py
-/housing/_housing.code-workspace
+
 #data.json
-_sandbox.code-workspace
-/youtube_projects
+
+
