@@ -1,12 +1,16 @@
 #directories
 venv/
+v_env/
+prod_venv/
 virtualspace/
+disk_mgmt/
+youtube_projects/
 
 # files
 *.pdf
 *.csv
+*.code-workspace
 
 header_template.py
-/housing/_housing.code-workspace
-_sandbox.code-workspace
+
 #data.json
